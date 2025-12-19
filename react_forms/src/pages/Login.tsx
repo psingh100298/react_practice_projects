@@ -4,6 +4,7 @@ import { Button, Input, Space } from 'antd';
 import { useForm, Controller } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom';
 import { schemas } from '../validations/validations.schema';
+import { UserStore } from '../store/UserStore';
 
 interface LoginData {
   email:string,
@@ -13,6 +14,8 @@ interface LoginData {
 const Login = () =>  {
 
   const navigate = useNavigate();
+
+  const getUserData = UserStore((s:any)=> s.userData);
 
   const {handleSubmit, control, formState:{errors}} = useForm<LoginData>({
     resolver: zodResolver(schemas?.login),
@@ -24,6 +27,7 @@ const Login = () =>  {
 
   const onSubmit = (data:LoginData) => {
     console.log('data from login is', data);
+    console.log('user data from login page', getUserData);
     navigate('/')
   }
 

@@ -4,6 +4,7 @@ import { Button, Input, Radio, Space } from "antd";
 import { Controller, useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom";
 import { schemas } from "../validations/validations.schema";
+import { UserStore } from "../store/UserStore";
 
 interface registrationData {
   fullName:string,
@@ -18,6 +19,7 @@ interface registrationData {
 const Registration = () => {
 
   const navigate = useNavigate();
+  const setUserData = UserStore((s:any)=> s.setUserData);
 
   const { handleSubmit, control,  formState: { errors } } = useForm<registrationData>({
     resolver: zodResolver(schemas?.registration),
@@ -35,6 +37,7 @@ const Registration = () => {
 
   const onSubmit = (data: registrationData) => {
     console.log('registration data is', data);
+    setUserData(data);
     navigate('/login') ;
   }
 
