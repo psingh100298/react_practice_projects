@@ -1,20 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Input, Space } from 'antd';
 import { useForm, Controller } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom';
+import { schemas } from '../validations/validations.schema';
+
+interface LoginData {
+  email:string,
+  password:string
+}
 
 const Login = () =>  {
 
   const navigate = useNavigate();
 
-  const {handleSubmit, control} = useForm({
+  const {handleSubmit, control, formState:{errors}} = useForm<LoginData>({
+    resolver: zodResolver(schemas?.login),
     defaultValues:{
       email:'',
       password:''
     }
   })
 
-  const onSubmit = (data:any) => {
+  const onSubmit = (data:LoginData) => {
     console.log('data from login is', data);
     navigate('/')
   }
@@ -27,7 +35,11 @@ const Login = () =>  {
       name='email'
       control={control}
       render={({field})=> {
-       return  <Input {...field} placeholder="Enter Email" />;
+       return <> <Input {...field} placeholder="Enter Email" />
+              {errors.email && <span className='text-xs text-red-500'>
+                {errors.email.message}
+                </span>}
+       </>
 
       }}
       />
@@ -35,7 +47,9 @@ const Login = () =>  {
       name='password'
       control={control}
       render={({field})=>{
-        return <Input {...field} placeholder='Enter password'/>
+        return <><Input {...field} placeholder='Enter password'/>
+          {errors.password && <span className='text-xs text-red-500'>{errors.password.message}</span>}
+        </>
       }}
       />
       <Button type='primary' htmlType='submit' className='w-full'>Login</Button>
